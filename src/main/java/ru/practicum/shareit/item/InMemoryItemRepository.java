@@ -48,7 +48,7 @@ public class InMemoryItemRepository implements ItemRepository {
     @Override
     public List<ItemDto> getOwnerItems(Long userId) {
         List<ItemDto> listOfItems = items.values().stream()
-                .filter(item -> item.getOwner() == userId)
+                .filter(item -> item.getOwner().equals(userId))
                 .map(item -> mapper.toItemDto(item))
                 .collect(Collectors.toList());
         return listOfItems;
