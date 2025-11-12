@@ -2,23 +2,20 @@ package ru.practicum.shareit.user;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.EntityNotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
-    Map<Long, User> users = new HashMap<>();
-    public Long generatorId = 0L;
-    private final UserMapper mapper = new UserMapper();
+    private Map<Long, User> users = new HashMap<>();
+    private Long generatorId = 0L;
 
     @Override
     public Map<Long, User> getTableUsers() {
-        return users;
+        return new HashMap<>(users);
     }
 
     @Override
@@ -29,22 +26,17 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public UserDto getUser(Long id) {
+    public User getUser(Long id) {
         if (!users.containsKey(id) || id == null) {
             throw new EntityNotFoundException("Пользователь с id = " + id + " не найден");
         } else {
-            User user = users.get(id);
-            UserDto userDto = mapper.userDto(user);
-            return userDto;
+            return users.get(id);
         }
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<UserDto> usersList = users.values().stream()
-                .map(user -> new UserMapper().userDto(user))
-                .collect(Collectors.toList());
-        return usersList;
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
     }
 
     @Override

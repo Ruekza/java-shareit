@@ -9,13 +9,13 @@ import java.util.Map;
 public interface ItemRepository {
     Map<Long, Item> getTableItems();
 
-    Item addItem(Long userId, ItemDto itemDto);
+    Item addItem(Long userId, Item item);
 
     Item updateItem(Long userId, Long itemId, ItemDto itemDto);
 
-    ItemDto getItem(Long userId, Long itemId);
+    Item getItem(Long userId, Long itemId);
 
-    List<ItemDto> getOwnerItems(Long userId);
+    List<Item> getOwnerItems(Long userId);
 
-    List<ItemDto> search(Long userId, String text);
+    List<Item> search(Long userId, String text);
 }

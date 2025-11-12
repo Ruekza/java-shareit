@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,10 +24,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-        if (isEmailExist(user)) {
+    public User createUser(UserDto userDto) {
+        if (isEmailExist(userDto)) {
             throw new ValidationException("Такой email уже используется");
         } else {
+            User user = UserMapper.toUser(userDto);
             return userRepository.createUser(user);
         }
     }
@@ -36,29 +39,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, User newUser) {
+    public User updateUser(Long id, UserDto userDto) {
         if (!isUserExist(id)) {
             throw new EntityNotFoundException("Пользователя с указанным id не существует");
         }
-        if (newUser.getEmail() != null && isEmailExist(newUser)) {
+        if (userDto.getEmail() != null && isEmailExist(userDto)) {
             throw new ValidationException("Такой email уже используется");
         } else {
-            return userRepository.updateUser(id, newUser);
+            User user = UserMapper.toUser(userDto);
+            return userRepository.updateUser(id, user);
         }
     }
 
     @Override
     public UserDto getUser(Long id) {
-        return userRepository.getUser(id);
+        User user = userRepository.getUser(id);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userRepository.getAllUsers();
+        List<User> listOfUsers = userRepository.getAllUsers();
+        return listOfUsers.stream()
+                .map(user -> UserMapper.toUserDto(user))
+                .collect(Collectors.toList());
     }
 
-    private boolean isEmailExist(User newUser) {
-        String email = newUser.getEmail();
+    private boolean isEmailExist(UserDto userDto) {
+        String email = userDto.getEmail();
         return getTableUsers().values().stream()
                 .anyMatch(user -> user.getEmail().equals(email));
     }

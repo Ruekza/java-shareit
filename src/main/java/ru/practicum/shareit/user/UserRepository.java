@@ -1,7 +1,5 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.user.dto.UserDto;
-
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +8,9 @@ public interface UserRepository {
 
     public User createUser(User user);
 
-    public UserDto getUser(Long id);
+    public User getUser(Long id);
 
-    public List<UserDto> getAllUsers();
+    public List<User> getAllUsers();
 
     public User updateUser(Long id, User newUser);
 

@@ -9,9 +9,9 @@ import java.util.Map;
 public interface ItemService {
     Map<Long, Item> getTableItems();
 
-    Item addItem(Long userId, ItemDto itemDto);
+    ItemDto addItem(Long userId, ItemDto itemDto);
 
-    Item updateItem(Long userId, Long itemId, ItemDto itemDto);
+    ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto);
 
     ItemDto getItem(Long userId, Long itemId);
 

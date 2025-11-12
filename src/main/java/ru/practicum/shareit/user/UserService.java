@@ -8,11 +8,11 @@ import java.util.Map;
 public interface UserService {
     Map<Long, User> getTableUsers();
 
-    User createUser(User user);
+    User createUser(UserDto userDto);
 
     void deleteUser(Long id);
 
-    User updateUser(Long id, User newUser);
+    User updateUser(Long id, UserDto userDto);
 
     UserDto getUser(Long id);
 
