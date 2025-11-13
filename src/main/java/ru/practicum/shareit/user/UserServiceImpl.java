@@ -7,7 +7,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,17 +18,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<Long, User> getTableUsers() {
-        return userRepository.getTableUsers();
-    }
-
-    @Override
-    public User createUser(UserDto userDto) {
+    public UserDto createUser(UserDto userDto) {
         if (isEmailExist(userDto)) {
             throw new ValidationException("Такой email уже используется");
         } else {
             User user = UserMapper.toUser(userDto);
-            return userRepository.createUser(user);
+            User createdUser = userRepository.createUser(user);
+            return UserMapper.toUserDto(createdUser);
         }
     }
 
@@ -39,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long id, UserDto userDto) {
+    public UserDto updateUser(Long id, UserDto userDto) {
         if (!isUserExist(id)) {
             throw new EntityNotFoundException("Пользователя с указанным id не существует");
         }
@@ -47,7 +42,8 @@ public class UserServiceImpl implements UserService {
             throw new ValidationException("Такой email уже используется");
         } else {
             User user = UserMapper.toUser(userDto);
-            return userRepository.updateUser(id, user);
+            User updatedUser = userRepository.updateUser(id, user);
+            return UserMapper.toUserDto(updatedUser);
         }
     }
 
@@ -67,12 +63,13 @@ public class UserServiceImpl implements UserService {
 
     private boolean isEmailExist(UserDto userDto) {
         String email = userDto.getEmail();
-        return getTableUsers().values().stream()
+        return getAllUsers().stream()
                 .anyMatch(user -> user.getEmail().equals(email));
     }
 
     @Override
     public boolean isUserExist(Long id) {
-        return getTableUsers().containsKey(id);
+        return getAllUsers().stream()
+                .anyMatch(user -> user.getId().equals(id));
     }
 }

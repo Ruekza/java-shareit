@@ -14,11 +14,6 @@ public class InMemoryUserRepository implements UserRepository {
     private Long generatorId = 0L;
 
     @Override
-    public Map<Long, User> getTableUsers() {
-        return new HashMap<>(users);
-    }
-
-    @Override
     public User createUser(User user) {
         user.setId(nextId());
         users.put(user.getId(), user);

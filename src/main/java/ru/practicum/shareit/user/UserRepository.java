@@ -1,10 +1,8 @@
 package ru.practicum.shareit.user;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserRepository {
-    public Map<Long, User> getTableUsers();
 
     public User createUser(User user);
 
