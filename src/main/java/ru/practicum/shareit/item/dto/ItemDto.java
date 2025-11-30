@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.ToString;
+import ru.practicum.shareit.item.model.Comment;
+
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
@@ -18,4 +21,6 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Статус должен принимать одно из двух значений: true или false")
     private Boolean available;
+    private List<Comment> comments;
+
 }

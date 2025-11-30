@@ -1,21 +1,30 @@
 package ru.practicum.shareit.item;
 
-import ru.practicum.shareit.item.dto.ItemDto;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
-public interface ItemRepository {
-    Map<Long, Item> getTableItems();
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    List<Item> findByUser_Id(Long userId);
 
-    Item addItem(Long userId, Item item);
+    @Query("SELECT it FROM Item AS it" +
+            " WHERE it.available = true AND (LOWER(it.name) LIKE %?1% OR LOWER(it.description) LIKE %?1%)")
+    List<Item> findByNameOrDescription(String text);
 
-    Item updateItem(Long userId, Long itemId, ItemDto itemDto);
 
-    Item getItem(Long userId, Long itemId);
+    @Query("SELECT bk.endDate FROM Booking AS bk " +
+            "WHERE bk.item.id = ?1 AND bk.endDate < ?2 AND bk.status LIKE 'APPROVED' " +
+            "ORDER BY bk.endDate DESC " +
+            "LIMIT 1")
+    LocalDateTime findLastBookingForItem(Long itemId, LocalDateTime now);
 
-    List<Item> getOwnerItems(Long userId);
+    @Query("SELECT bk.startDate FROM Booking  AS bk " +
+            "WHERE bk.item.id = ?1 AND bk.startDate > ?2 " +
+            "ORDER BY bk.startDate ASC " +
+            "LIMIT 1")
+    LocalDateTime findNextBookingForItem(Long itemId, LocalDateTime now);
 
-    List<Item> search(Long userId, String text);
 }
