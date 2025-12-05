@@ -1,9 +1,10 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
 
@@ -42,14 +43,14 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getUserBookings(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                            @RequestParam(name = "state", required = false, defaultValue = "ALL") String state) {
+                                            @RequestParam(name = "state", defaultValue = "ALL") String state) {
         state = state.toUpperCase();
         return bookingService.getUserBookings(userId, state);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                             @RequestParam(name = "state", required = false, defaultValue = "ALL") String state) {
+                                             @RequestParam(name = "state", defaultValue = "ALL") String state) {
         state = state.toUpperCase();
         return bookingService.getOwnerBookings(userId, state);
     }

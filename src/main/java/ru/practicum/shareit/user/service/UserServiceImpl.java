@@ -1,17 +1,21 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
@@ -20,6 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto userDto) {
         if (isEmailExist(userDto)) {
             throw new ValidationException("Такой email уже используется");
@@ -31,6 +36,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         if (!isUserExist(id)) {
             throw new EntityNotFoundException("Пользователя с указанным id не существует");
@@ -40,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(Long id, UserDto userDto) {
         User oldUser = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Пользователя с указанным id не существует"));
         if (userDto.getName() != null) {

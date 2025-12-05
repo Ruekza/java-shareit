@@ -1,7 +1,8 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.service;
 
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.BookingRepository;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.EntityNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -11,16 +12,19 @@ import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserService;
-import ru.practicum.shareit.user.UserServiceImpl;
+import ru.practicum.shareit.item.storage.CommentRepository;
+import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.storage.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
@@ -38,18 +42,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto addItem(Long userId, ItemDto itemDto) {
-        if (!userService.isUserExist(userId)) {
-            throw new EntityNotFoundException("Пользователь с указанным id не существует");
-        } else {
-            Item item = ItemMapper.toItem(itemDto, userId);
-            item.getUser().setId(userId);
-            Item createdItem = itemRepository.save(item);
-            return ItemMapper.toItemDto(createdItem);
-        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь с указанным id не существует"));
+        Item item = ItemMapper.toItem(itemDto, user);
+        Item createdItem = itemRepository.save(item);
+        return ItemMapper.toItemDto(createdItem);
     }
 
+
     @Override
+    @Transactional
     public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Вещь с указанным id не существует"));
         if (item.getUser().getId().equals(userId)) {
@@ -77,7 +80,7 @@ public class ItemServiceImpl implements ItemService {
             itemDtoOwner.setLastBooking(itemRepository.findLastBookingForItem(itemId, LocalDateTime.now()));
             itemDtoOwner.setNextBooking(itemRepository.findNextBookingForItem(itemId, LocalDateTime.now()));
         }
-        itemDtoOwner.setComments(commentRepository.findComments(itemId));
+        itemDtoOwner.setComments(CommentMapper.toListCommentDto(commentRepository.findComments(itemId)));
         return itemDtoOwner;
 
     }
@@ -94,7 +97,7 @@ public class ItemServiceImpl implements ItemService {
             for (ItemDtoOwner itemDtoOwner : itemDtoOwners) {
                 itemDtoOwner.setLastBooking(itemRepository.findLastBookingForItem(itemDtoOwner.getId(), LocalDateTime.now()));
                 itemDtoOwner.setNextBooking(itemRepository.findNextBookingForItem(itemDtoOwner.getId(), LocalDateTime.now()));
-                itemDtoOwner.setComments(commentRepository.findComments(itemDtoOwner.getId()));
+                itemDtoOwner.setComments(CommentMapper.toListCommentDto(commentRepository.findComments(itemDtoOwner.getId())));
             }
             return itemDtoOwners;
 
@@ -118,6 +121,8 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.existsById(id);
     }
 
+    @Override
+    @Transactional
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь с указанным id не существует"));
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new EntityNotFoundException("Вещь с указанным id не найдена"));

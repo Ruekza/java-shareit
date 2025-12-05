@@ -1,14 +1,12 @@
 package ru.practicum.shareit.item.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 
 /**
  * TODO Sprint add-controllers.
  */
-//@Data
 @EqualsAndHashCode(of = {"id"})
 @ToString
 @AllArgsConstructor
@@ -25,7 +23,7 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    @JsonIgnore
+    @ToString.Exclude
     private User user;
 
     @Column(name = "name")
