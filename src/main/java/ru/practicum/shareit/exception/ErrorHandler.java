@@ -19,7 +19,13 @@ public class ErrorHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleEntityNotFound(final EntityNotFoundException e) {
+    public Map<String, String> handleEntityNotFound(EntityNotFoundException e) {
+        return Map.of("описание ошибки", e.getMessage());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleConflict(ConflictException e) {
         return Map.of("описание ошибки", e.getMessage());
     }
 }
