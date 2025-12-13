@@ -18,7 +18,7 @@ public class ItemMapper {
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.getAvailable());
         itemDto.setUserId(item.getUser().getId());
-        if(item.getRequest() != null) {
+        if (item.getRequest() != null) {
             itemDto.setRequest(item.getRequest().getId());
         } else {
             itemDto.setRequest(null);
@@ -57,7 +57,7 @@ public class ItemMapper {
 
     public static List<ItemDtoRequset> toListItemDtoRequest(Iterable<Item> items) {
         List<ItemDtoRequset> dtos = new ArrayList<>();
-        for (Item item: items) {
+        for (Item item : items) {
             dtos.add(toItemDtoRequest(item));
         }
         return dtos;

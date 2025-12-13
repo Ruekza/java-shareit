@@ -50,8 +50,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(Long userId, ItemDto itemDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("Пользователь с указанным id не существует"));
         ItemRequest request = null;
-      if (itemDto.getRequest() !=null ) {
-           request = requestRepository.findById(itemDto.getRequest()).orElseThrow(() -> new EntityNotFoundException("Запрос не найден"));
+        if (itemDto.getRequest() != null) {
+            request = requestRepository.findById(itemDto.getRequest()).orElseThrow(() -> new EntityNotFoundException("Запрос не найден"));
         }
         Item item = ItemMapper.toItem(itemDto, user, request);
         Item createdItem = itemRepository.save(item);

@@ -36,13 +36,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestWithAnswerDto> getUserRequests(Long userId) {
-       List<ItemRequest> requests = requestRepository.getUserRequests(userId);
+        List<ItemRequest> requests = requestRepository.getUserRequests(userId);
 
-      List<ItemRequestWithAnswerDto> dtos = RequestMapper.toListItemRequestWithAnswerDto(requests);
-         for(ItemRequestWithAnswerDto itemRequestWithAnswerDto: dtos) {
+        List<ItemRequestWithAnswerDto> dtos = RequestMapper.toListItemRequestWithAnswerDto(requests);
+        for (ItemRequestWithAnswerDto itemRequestWithAnswerDto : dtos) {
             itemRequestWithAnswerDto.setItems(ItemMapper.toListItemDtoRequest(itemRepository.findByRequest_Id(itemRequestWithAnswerDto.getId())));
-         }
-         return dtos;
+        }
+        return dtos;
     }
 
     @Override
