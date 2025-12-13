@@ -82,7 +82,7 @@ public class ItemServiceImplTest {
         itemDtoNew.setName("книжечка");
         itemDtoNew.setDescription("крутая");
 
-        ItemDto updateItemDto = itemService.updateItem(createdItemDto.getId(), createdItemDto.getId(), itemDtoNew);
+        ItemDto updateItemDto = itemService.updateItem(createdUserDto.getId(), createdItemDto.getId(), itemDtoNew);
 
         Item item = em.createQuery("Select i from Item i where i.id = :id", Item.class)
                 .setParameter("id", createdItemDto.getId())
