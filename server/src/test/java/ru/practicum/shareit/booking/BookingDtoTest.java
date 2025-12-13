@@ -25,7 +25,7 @@ public class BookingDtoTest {
 
     @SneakyThrows
     @Test
-    void testBookingDto() {
+    void bookingDtoTest() {
         LocalDateTime start = LocalDateTime.of(2025, 12, 15, 15, 00, 00);
         LocalDateTime end = LocalDateTime.of(2025, 12, 18, 15, 00, 00);
         ItemDto item = new ItemDto(4L, "фотокамера", 18L, "Sony", true, null, null);

@@ -19,7 +19,7 @@ public class ItemDtoTest {
 
     @SneakyThrows
     @Test
-    void testItemDto() {
+    void itemDtoTest() {
         ItemDto itemDto = new ItemDto(1L, "книга", 2L, "очень захватывающая", true, null, null);
 
         JsonContent<ItemDto> result = json.write(itemDto);

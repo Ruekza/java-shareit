@@ -58,4 +58,27 @@ public class BookingServiceImplTest {
         assertThat(booking.getItem().getId(), equalTo(gotBookingDto.getItem().getId()));
         assertThat(booking.getBooker().getId(), equalTo(gotBookingDto.getBooker().getId()));
     }
+
+    @Test
+    void addBooking() {
+        UserDto user = new UserDto(null, "Bob", "ppp@mail.ru");
+        UserDto userDto = userService.createUser(user);
+
+        ItemDto item = new ItemDto(null, "фотокамера", userDto.getId(), "Sony", true, null, null);
+        ItemDto itemDto = itemService.addItem(userDto.getId(), item);
+
+        LocalDateTime start = LocalDateTime.of(2025, 12, 15, 15, 00, 00);
+        LocalDateTime end = LocalDateTime.of(2025, 12, 18, 15, 00, 00);
+        BookingCreateDto bookingCreateDto = new BookingCreateDto(null, start, end, itemDto.getId(), userDto.getId(), BookingStatus.WAITING);
+
+        BookingDto createdBooking = bookingService.addBooking(userDto.getId(), bookingCreateDto);
+
+        TypedQuery<Booking> query = em.createQuery("Select b from Booking b where b.id = :id", Booking.class);
+        Booking booking = query.setParameter("id", createdBooking.getId())
+                .getSingleResult();
+
+        assertThat(booking.getId(), notNullValue());
+        assertThat(booking.getItem().getId(), equalTo(createdBooking.getItem().getId()));
+        assertThat(booking.getBooker().getId(), equalTo(createdBooking.getBooker().getId()));
+    }
 }
