@@ -28,7 +28,6 @@ public class ItemServiceImplTest {
     private final EntityManager em;
     private final ItemService itemService;
     private final UserService userService;
-    private final BookingService bookingService;
 
     @Test
     void getItem() {
