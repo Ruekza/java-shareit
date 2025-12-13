@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class BookingDtoJsonTest {
+public class BookingDtoTest {
 
     private final JacksonTester<BookingDto> json;
 

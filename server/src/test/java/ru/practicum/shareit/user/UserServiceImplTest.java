@@ -37,4 +37,5 @@ public class UserServiceImplTest {
         assertThat(user.getName(), equalTo(userDto.getName()));
         assertThat(user.getEmail(), equalTo(userDto.getEmail()));
     }
+
 }
